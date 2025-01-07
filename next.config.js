@@ -1,4 +1,3 @@
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -7,6 +6,8 @@ const nextConfig = {
   experimental: {
     esmExternals: 'loose',
   },
+  // Disable SWC minifier
+  swcMinify: false,
 }
 
 module.exports = nextConfig 
