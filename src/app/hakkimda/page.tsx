@@ -46,7 +46,7 @@ export default function AboutPage() {
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 mb-6">
-            Merhaba, Ben Mucahid
+            Mücahid Özer
           </h1>
           <h2 className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 font-medium mb-8">
             Full Stack Yazılım Geliştirici
