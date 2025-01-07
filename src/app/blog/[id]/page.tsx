@@ -23,7 +23,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
           {post.title}
         </h1>
-        <div className="flex items-center justify-center gap-4 text-gray-600 dark:text-gray-400">
+        <div className="flex items-center justify-center gap-4 text-gray-600 dark:text-gray-300">
           <time dateTime={post.date}>{post.date}</time>
           <span>·</span>
           <span>{post.readTime} dk okuma</span>
@@ -41,7 +41,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
       </div>
 
       <div className="prose prose-lg dark:prose-invert mx-auto">
-        <p className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+        <p className="text-gray-700 dark:text-gray-200 leading-relaxed whitespace-pre-line">
           {post.content}
         </p>
       </div>
@@ -50,7 +50,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         {post.tags.map((tag) => (
           <span
             key={tag}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100"
           >
             {tag}
           </span>
