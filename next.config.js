@@ -3,11 +3,16 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    esmExternals: 'loose',
+  // Enable SWC minifier for better performance
+  swcMinify: true,
+  // Optimize production builds
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Disable SWC minifier
-  swcMinify: false,
+  // Enable React strict mode for better performance
+  reactStrictMode: true,
+  // Reduce bundle size
+  poweredByHeader: false,
 }
 
 module.exports = nextConfig 

@@ -2,7 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import ThemeToggle from './ThemeToggle'
+import dynamic from 'next/dynamic'
+import { memo } from 'react'
+
+const ThemeToggle = dynamic(() => import('./ThemeToggle'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-[104px] h-[40px] bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
+  ),
+})
 
 const links = [
   { href: '/', label: 'Ana Sayfa' },
@@ -10,7 +18,7 @@ const links = [
   { href: '/hakkimda', label: 'Hakkımda' },
 ]
 
-export default function Header() {
+const Header = memo(function Header() {
   const pathname = usePathname()
 
   return (
@@ -52,4 +60,6 @@ export default function Header() {
       </nav>
     </header>
   )
-} 
+})
+
+export default Header 

@@ -1,10 +1,17 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/Header'
+import dynamic from 'next/dynamic'
 import { ThemeProvider } from 'next-themes'
 
-const inter = Inter({ subsets: ['latin'] })
+const Header = dynamic(() => import('@/components/Header'), {
+  ssr: true,
+})
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Kişisel Blog',
@@ -19,9 +26,9 @@ export default function RootLayout({
   return (
     <html lang="tr" suppressHydrationWarning>
       <body className={`${inter.className} bg-white dark:bg-gray-900 transition-colors`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Header />
-          <main>{children}</main>
+          <main className="max-w-[980px] mx-auto px-4 sm:px-6 lg:px-8">{children}</main>
         </ThemeProvider>
       </body>
     </html>

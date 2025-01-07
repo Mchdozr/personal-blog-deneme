@@ -1,19 +1,18 @@
 'use client'
 
 import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 
-export default function ThemeToggle() {
+const ThemeToggle = memo(function ThemeToggle() {
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
 
-  // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
     setMounted(true)
   }, [])
 
   if (!mounted) {
-    return null
+    return <div className="w-[104px] h-[40px] bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
   }
 
   return (
@@ -42,4 +41,6 @@ export default function ThemeToggle() {
       </button>
     </div>
   )
-} 
+})
+
+export default ThemeToggle 
