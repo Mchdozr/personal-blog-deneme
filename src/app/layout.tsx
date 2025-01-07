@@ -1,10 +1,14 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
+import { ThemeProvider } from 'next-themes'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Yazılım Dünyası - Kişisel Blog',
-  description: 'Yazılım dünyasından en güncel bilgiler ve kişisel deneyimler.',
+  title: 'Kişisel Blog',
+  description: 'Modern web teknolojileri ve yazılım geliştirme üzerine blog.',
 }
 
 export default function RootLayout({
@@ -13,13 +17,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="tr">
-      <body className="bg-gradient-to-br from-apple-gray-50 via-white to-apple-gray-100 min-h-screen font-sans antialiased">
-        <div className="fixed inset-0 bg-gradient-color opacity-5" style={{ '--gradient-start': '#0066cc', '--gradient-end': '#9d0297' } as any} />
-        <Header />
-        <main className="relative max-w-[980px] mx-auto px-4 sm:px-6 lg:px-8">
-          {children}
-        </main>
+    <html lang="tr" suppressHydrationWarning>
+      <body className={`${inter.className} bg-white dark:bg-gray-900 transition-colors`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Header />
+          <main>{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   )
