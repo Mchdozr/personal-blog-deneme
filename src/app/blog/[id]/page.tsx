@@ -1,9 +1,8 @@
 'use client'
 
 import { posts } from '@/data/posts'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 interface BlogPostPageProps {
   params: {
@@ -12,72 +11,51 @@ interface BlogPostPageProps {
 }
 
 export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = posts.find((p) => p.id === params.id)
+  const post = posts.find((post) => post.id === params.id)
 
   if (!post) {
     notFound()
   }
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="max-w-3xl mx-auto pt-24"
-    >
-      {post.image && (
-        <div className="relative h-[400px] mb-12 rounded-2xl overflow-hidden">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-      )}
-
-      <header className="mb-12">
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-5xl font-semibold text-apple-gray-800 mb-6 leading-tight tracking-tight"
-        >
+    <article className="max-w-3xl mx-auto pt-28">
+      <header className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
           {post.title}
-        </motion.h1>
-        
-        <div className="flex items-center gap-3 text-apple-gray-500 mb-6">
-          <time className="text-lg">{new Date(post.date).toLocaleDateString('tr-TR')}</time>
-          <span>•</span>
-          <span className="text-lg">{post.author}</span>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {post.tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-4 py-1.5 text-sm rounded-full bg-apple-gray-100 text-apple-gray-600 font-medium"
-            >
-              {tag}
-            </span>
-          ))}
+        </h1>
+        <div className="flex items-center justify-center gap-4 text-gray-600 dark:text-gray-400">
+          <time dateTime={post.date}>{post.date}</time>
+          <span>·</span>
+          <span>{post.readTime} dk okuma</span>
         </div>
       </header>
 
-      <div className="prose prose-lg max-w-none">
-        {post.content.split('\n').map((paragraph, index) => (
-          <motion.p 
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-            className="mb-6 text-xl leading-relaxed text-apple-gray-600"
+      <div className="aspect-[16/9] relative rounded-2xl overflow-hidden mb-12">
+        <Image
+          src={post.image}
+          alt={post.title}
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
+
+      <div className="prose prose-lg dark:prose-invert mx-auto">
+        <p className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+          {post.content}
+        </p>
+      </div>
+
+      <div className="mt-12 flex flex-wrap gap-2">
+        {post.tags.map((tag) => (
+          <span
+            key={tag}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
           >
-            {paragraph.trim()}
-          </motion.p>
+            {tag}
+          </span>
         ))}
       </div>
-    </motion.article>
+    </article>
   )
 } 
