@@ -1,0 +1,119 @@
+@page "/"
+@page "/admin"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="min-h-screen bg-gray-100">
+    <!-- Üst Menü -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-2xl font-bold text-indigo-600">Admin Panel</span>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button @onclick="HandleLogout" 
+                            class="ml-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Çıkış Yap
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ana İçerik -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Hoş Geldin Mesajı -->
+        <div class="px-4 py-6 sm:px-0">
+            <div class="bg-white overflow-hidden shadow-xl rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Hoş Geldiniz!</h2>
+                <p class="text-gray-600">Admin panelinden blog yazılarınızı yönetebilir ve içeriklerinizi düzenleyebilirsiniz.</p>
+            </div>
+        </div>
+
+        <!-- Hızlı İstatistikler -->
+        <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Blog İstatistikleri -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Blog Yazıları</dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">Yönet</div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <button @onclick="NavigateToBlogManagement" class="font-medium text-indigo-600 hover:text-indigo-900">
+                            Blog Yönetimine Git <span aria-hidden="true">&rarr;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yeni Blog Yazısı -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Yeni Blog Yazısı</dt>
+                                <dd class="flex items-baseline">
+                                    <div class="text-2xl font-semibold text-gray-900">Ekle</div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <button @onclick="NavigateToCreateBlog" class="font-medium text-indigo-600 hover:text-indigo-900">
+                            Yeni Blog Yazısı Ekle <span aria-hidden="true">&rarr;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private async Task HandleLogout()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/login");
+    }
+
+    private void NavigateToBlogManagement()
+    {
+        NavigationManager.NavigateTo("/admin/blogs");
+    }
+
+    private void NavigateToCreateBlog()
+    {
+        NavigationManager.NavigateTo("/admin/blogs/create");
+    }
+} 

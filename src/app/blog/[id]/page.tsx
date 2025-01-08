@@ -1,61 +1,84 @@
-'use client'
+import fs from 'fs';
+import path from 'path';
+import { notFound } from 'next/navigation';
 
-import { posts } from '@/data/posts'
-import { notFound } from 'next/navigation'
-import Image from 'next/image'
-
-interface BlogPostPageProps {
-  params: {
-    id: string
-  }
+interface Blog {
+    id: number;
+    title: string;
+    content: string;
+    summary: string;
+    imageUrl: string;
+    createdAt: string;
+    updatedAt: string;
+    isPublished: boolean;
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = posts.find((post) => post.id === params.id)
+async function getBlog(id: string): Promise<Blog | null> {
+    const dataFile = path.join(process.cwd(), 'data', 'blogs.json');
+    if (!fs.existsSync(dataFile)) {
+        return null;
+    }
+    const data = fs.readFileSync(dataFile, 'utf-8');
+    const blogs: Blog[] = JSON.parse(data);
+    return blogs.find(blog => blog.id === parseInt(id)) || null;
+}
 
-  if (!post) {
-    notFound()
-  }
+export default async function BlogDetailPage({ params }: { params: { id: string } }) {
+    const blog = await getBlog(params.id);
 
-  return (
-    <article className="max-w-3xl mx-auto pt-28">
-      <header className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
-          {post.title}
-        </h1>
-        <div className="flex items-center justify-center gap-4 text-gray-600 dark:text-gray-300">
-          <time dateTime={post.date}>{post.date}</time>
-          <span>·</span>
-          <span>{post.readTime} dk okuma</span>
+    if (!blog) {
+        notFound();
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-100 py-12">
+            <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                {blog.imageUrl && (
+                    <div className="mb-8 rounded-lg overflow-hidden">
+                        <img
+                            src={blog.imageUrl}
+                            alt={blog.title}
+                            className="w-full h-96 object-cover"
+                        />
+                    </div>
+                )}
+
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div className="p-8">
+                        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                            {blog.title}
+                        </h1>
+
+                        <div className="flex items-center text-gray-500 text-sm mb-8">
+                            <time dateTime={blog.createdAt}>
+                                {new Date(blog.createdAt).toLocaleDateString('tr-TR')}
+                            </time>
+                            {blog.updatedAt && blog.updatedAt !== blog.createdAt && (
+                                <span className="ml-4">
+                                    (Güncellendi: {new Date(blog.updatedAt).toLocaleDateString('tr-TR')})
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="prose prose-lg max-w-none">
+                            {blog.content.split('\n').map((paragraph, index) => (
+                                <p key={index} className="mb-4">
+                                    {paragraph}
+                                </p>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-8 text-center">
+                    <a
+                        href="/blog"
+                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        ← Blog Listesine Dön
+                    </a>
+                </div>
+            </article>
         </div>
-      </header>
-
-      <div className="aspect-[16/9] relative rounded-2xl overflow-hidden mb-12">
-        <Image
-          src={post.image}
-          alt={post.title}
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
-
-      <div className="prose prose-lg dark:prose-invert mx-auto">
-        <p className="text-gray-700 dark:text-gray-200 leading-relaxed whitespace-pre-line">
-          {post.content}
-        </p>
-      </div>
-
-      <div className="mt-12 flex flex-wrap gap-2">
-        {post.tags.map((tag) => (
-          <span
-            key={tag}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-    </article>
-  )
+    );
 } 

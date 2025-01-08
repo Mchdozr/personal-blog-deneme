@@ -1,0 +1,89 @@
+@page "/login"
+@using AdminPanel.Models
+@using AdminPanel.Services
+@using Microsoft.AspNetCore.Components
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Admin Panel Girişi
+            </h2>
+        </div>
+        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" class="mt-8 space-y-6">
+            <DataAnnotationsValidator />
+            
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="username" class="sr-only">Kullanıcı Adı</label>
+                    <InputText id="username" 
+                              @bind-Value="loginModel.Username"
+                              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                              placeholder="Kullanıcı Adı" />
+                    <ValidationMessage For="@(() => loginModel.Username)" />
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Şifre</label>
+                    <InputText type="password" 
+                              id="password" 
+                              @bind-Value="loginModel.Password"
+                              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                              placeholder="Şifre" />
+                    <ValidationMessage For="@(() => loginModel.Password)" />
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="text-red-500 text-sm mt-2">
+                    @errorMessage
+                </div>
+            }
+
+            <div>
+                <button type="submit" 
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Giriş Yap
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new();
+    private string errorMessage = string.Empty;
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
+    private class LoginModel
+    {
+        [Required(ErrorMessage = "Kullanıcı adı zorunludur.")]
+        public string Username { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Şifre zorunludur.")]
+        public string Password { get; set; } = string.Empty;
+    }
+
+    private async Task HandleLogin()
+    {
+        errorMessage = string.Empty;
+        var result = await AuthService.LoginAsync(loginModel.Username, loginModel.Password);
+        
+        if (result)
+        {
+            var returnUrl = string.IsNullOrEmpty(ReturnUrl) ? "/admin" : ReturnUrl;
+            NavigationManager.NavigateTo(returnUrl);
+        }
+        else
+        {
+            errorMessage = "Kullanıcı adı veya şifre hatalı.";
+        }
+    }
+} 

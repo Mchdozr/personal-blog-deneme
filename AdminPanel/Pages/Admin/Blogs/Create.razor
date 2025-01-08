@@ -1,0 +1,110 @@
+@page "/admin/blogs/create"
+@using AdminPanel.Models
+@using AdminPanel.Services
+@inject IBlogService BlogService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+<div class="min-h-screen bg-gray-50">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="mb-8">
+            <button @onclick="NavigateBack" class="text-indigo-600 hover:text-indigo-900 flex items-center">
+                <span class="mr-2">←</span>
+                Geri Dön
+            </button>
+        </div>
+
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h1 class="text-2xl font-bold text-gray-900">Yeni Blog Yazısı</h1>
+            </div>
+
+            <div class="px-6 py-4">
+                <EditForm Model="@blog" OnValidSubmit="HandleValidSubmit">
+                    <DataAnnotationsValidator />
+
+                    <div class="space-y-6">
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700">Başlık</label>
+                            <div class="mt-1">
+                                <InputText id="title" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" @bind-Value="blog.Title" />
+                            </div>
+                            <ValidationMessage For="@(() => blog.Title)" class="mt-1 text-sm text-red-600" />
+                        </div>
+
+                        <div>
+                            <label for="summary" class="block text-sm font-medium text-gray-700">Özet</label>
+                            <div class="mt-1">
+                                <InputTextArea id="summary" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" @bind-Value="blog.Summary" />
+                            </div>
+                            <ValidationMessage For="@(() => blog.Summary)" class="mt-1 text-sm text-red-600" />
+                        </div>
+
+                        <div>
+                            <label for="content" class="block text-sm font-medium text-gray-700">İçerik</label>
+                            <div class="mt-1">
+                                <InputTextArea id="content" rows="10" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" @bind-Value="blog.Content" />
+                            </div>
+                            <ValidationMessage For="@(() => blog.Content)" class="mt-1 text-sm text-red-600" />
+                        </div>
+
+                        <div>
+                            <label for="imageUrl" class="block text-sm font-medium text-gray-700">Görsel URL</label>
+                            <div class="mt-1">
+                                <InputText id="imageUrl" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" @bind-Value="blog.ImageUrl" />
+                            </div>
+                            <ValidationMessage For="@(() => blog.ImageUrl)" class="mt-1 text-sm text-red-600" />
+                        </div>
+
+                        <div>
+                            <label for="author" class="block text-sm font-medium text-gray-700">Yazar</label>
+                            <div class="mt-1">
+                                <InputText id="author" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" @bind-Value="blog.Author" />
+                            </div>
+                            <ValidationMessage For="@(() => blog.Author)" class="mt-1 text-sm text-red-600" />
+                        </div>
+
+                        <div class="flex items-center">
+                            <InputCheckbox id="isPublished" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" @bind-Value="blog.IsPublished" />
+                            <label for="isPublished" class="ml-2 block text-sm text-gray-900">
+                                Yayınla
+                            </label>
+                        </div>
+
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" @onclick="NavigateBack" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                İptal
+                            </button>
+                            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Blog blog = new Blog();
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/admin/blogs");
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await BlogService.CreateBlogAsync(blog);
+            NavigateBack();
+        }
+        catch (Exception ex)
+        {
+            // Hata yönetimi eklenebilir
+            Console.WriteLine($"Error creating blog: {ex.Message}");
+        }
+    }
+} 
